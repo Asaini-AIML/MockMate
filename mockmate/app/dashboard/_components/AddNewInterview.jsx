@@ -10,15 +10,18 @@ import {
 import { Input } from '/components/ui/input.jsx'
 import { Button } from '/components/ui/button.jsx'
 import { Textarea } from '/components/ui/textarea.jsx'
-import { chatSession } from 'utils/GeminiAiModel'
+import { chatSession } from '../../../utils/GeminiAiModel'
+import { LoaderCircle } from 'lucide-react'
+
 
 function AddNewInterview() {
     const [openDialog, setOpenDialog] = useState(false)
     const [jobPosition, setJobPosition] = useState('')
     const [jobDesc, setJobDesc] = useState('')
     const [jobExperience, setJobExperience] = useState('')
-
+    const [loading, setLoading] = useState(false)
     const onSubmit = async (e) => {
+      setLoading(true);
       e.preventDefault(); // Prevent default form submission
       console.log(jobPosition, jobDesc, jobExperience); // Debugging information
 
@@ -26,10 +29,12 @@ function AddNewInterview() {
       const inputPrompt = `Job Position: ${jobPosition}, Job Description: ${jobDesc}, Job Experience: ${jobExperience}. Please give me ${process.env.NEXT_PUBLIC_INTERVIEW_QUESTION_COUNT} interview questions with answers in JSON format.`;
 
       try {
-          // Send the message to the API
+          // Send the message to the 
+         
           const result = await chatSession.sendMessage(inputPrompt); // Use the correct chat session
-          console.log(result.response.text()); // Output the response from the API
-
+          const MockJsonResp=(result.response.text()).replace('```json','').replace('```','')
+          console.log(JSON.parse(MockJsonResp)); // Output the response from the API
+         setLoading(false);
           // Set the generated questions in state
           setGeneratedQuestions(result.response.text());
       } catch (error) {
@@ -64,7 +69,12 @@ function AddNewInterview() {
                                 </div>
                                 <div className='flex gap-5 justify-end'>
                                     <Button type="button" variant="ghost" onClick={() => setOpenDialog(false)}>Cancel</Button>
-                                    <Button type="submit">Start Interview</Button>
+                                    <Button type="submit" disable={loading}>
+                                      {loading ?
+                                      <>
+                                      <LoaderCircle className='animate-spin'/>'Generating from AI'
+                                      </>:'Start Interview ' }
+                                      Start Interview</Button>
                                 </div>
                             </form>
                         </DialogDescription>
