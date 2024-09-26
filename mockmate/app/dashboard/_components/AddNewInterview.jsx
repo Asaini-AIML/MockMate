@@ -1,8 +1,16 @@
 "use client"
 import React from 'react'
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, } from './components/ui/dialog'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "/components/ui/dialog"
+import { Input } from '/components/ui/input.jsx'
  import { useState } from 'react'
-  
+  import { Button } from '/components/ui/button.jsx'
 function AddNewInterview() {
     const [openDialog, setOpenDailog] = useState(false)
   return (
@@ -14,12 +22,17 @@ function AddNewInterview() {
         </div>
         <Dialog open={openDialog}>
   
-  <DialogContent>
+  <DialogContent className='max-w-2xl'>
     <DialogHeader>
-      <DialogTitle>Are you absolutely sure?</DialogTitle>
+      <DialogTitle className='text-2xl'>Tell us more about your job interviwing </DialogTitle>
       <DialogDescription>
-        This action cannot be undone. This will permanently delete your account
-        and remove your data from our servers.
+        <div className=''>
+          <h2>add Details about your job Position/role,job description and experience</h2>
+          <div className='my-2 mt-7 '>
+            <label>Job Role/Jop Position</label>
+            <Input placeholder='Ex. Full Stack Devlopher'/>
+          </div>
+        </div>
         <div className='flex gap-5 justify-end'>
             <Button variant="ghost" onClick={()=>setOpenDailog(false)}>Cancle</Button>
             <Button>Start Interview</Button>
