@@ -1,47 +1,89 @@
-"use client"
-import React, { useState } from 'react'
+"use client";
+import React, { useState } from 'react';
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from "/components/ui/dialog"
-import { Input } from '/components/ui/input.jsx'
-import { Button } from '/components/ui/button.jsx'
-import { Textarea } from '/components/ui/textarea.jsx'
-import { chatSession } from '../../../utils/GeminiAiModel'
-import { LoaderCircle } from 'lucide-react'
-
+} from "/components/ui/dialog";
+import { Input } from '/components/ui/input.jsx';
+import { Button } from '/components/ui/button.jsx';
+import { Textarea } from '/components/ui/textarea.jsx';
+import { chatSession } from '../../../utils/GeminiAiModel';
+import { LoaderCircle } from 'lucide-react';
+import { v4 as uuidv4 } from 'uuid';
+import { useUser } from '@clerk/clerk-react';
+import moment from 'moment';
+import { db } from '../../../utils/db';
+import { MockInterview } from '../../../utils/schema';
 
 function AddNewInterview() {
-    const [openDialog, setOpenDialog] = useState(false)
-    const [jobPosition, setJobPosition] = useState('')
-    const [jobDesc, setJobDesc] = useState('')
-    const [jobExperience, setJobExperience] = useState('')
-    const [loading, setLoading] = useState(false)
+    const [openDialog, setOpenDialog] = useState(false);
+    const [jobPosition, setJobPosition] = useState('');
+    const [jobDesc, setJobDesc] = useState('');
+    const [jobExperience, setJobExperience] = useState('');
+    const [loading, setLoading] = useState(false);
+    const createdAtDate = moment().toDate();
+
+    const { user } = useUser(); // Access the user information
+
+    // Function to sanitize the JSON response
+    const sanitizeJson = (jsonString) => {
+        return jsonString.replace(/[\u0000-\u001F\u007F-\u009F]/g, ''); // Remove control characters
+    };
+
     const onSubmit = async (e) => {
-      setLoading(true);
-      e.preventDefault(); // Prevent default form submission
-      console.log(jobPosition, jobDesc, jobExperience); // Debugging information
+        e.preventDefault(); // Prevent default form submission
+        setLoading(true); // Start loading state
+        console.log(jobPosition, jobDesc, jobExperience); // Debugging information
 
-      // Prepare the input prompt for the API call
-      const inputPrompt = `Job Position: ${jobPosition}, Job Description: ${jobDesc}, Job Experience: ${jobExperience}. Please give me ${process.env.NEXT_PUBLIC_INTERVIEW_QUESTION_COUNT} interview questions with answers in JSON format.`;
+        // Prepare the input prompt for the API call
+        const inputPrompt = `Job Position: ${jobPosition}, Job Description: ${jobDesc}, Job Experience: ${jobExperience}. Please give me ${process.env.NEXT_PUBLIC_INTERVIEW_QUESTION_COUNT} interview questions with answers in JSON format.`;
 
-      try {
-          // Send the message to the 
-         
-          const result = await chatSession.sendMessage(inputPrompt); // Use the correct chat session
-          const MockJsonResp=(result.response.text()).replace('```json','').replace('```','')
-          console.log(JSON.parse(MockJsonResp)); // Output the response from the API
-         setLoading(false);
-          // Set the generated questions in state
-          setGeneratedQuestions(result.response.text());
-      } catch (error) {
-          console.error("Error generating interview questions:", error);
-          // Handle error gracefully
-      }
-  }
+        try {
+            const result = await chatSession.sendMessage(inputPrompt); // Use the correct chat session
+            const rawResponse = await result.response.text();
+            const sanitizedResponse = sanitizeJson(rawResponse); // Sanitize the response
+            const mockJsonResp = sanitizedResponse.replace('```json', '').replace('```', '').trim();
+
+           
+
+            let parsedResponse;
+            try {
+                parsedResponse = JSON.parse(mockJsonResp); // Parse the sanitized response
+                console.log("Parsed Response:", parsedResponse); // Log the parsed JSON
+            } catch (parseError) {
+                console.error("Failed to parse JSON response:", parseError);
+                console.error("Response content:", mockJsonResp); // Log the attempted JSON content
+                setLoading(false);
+                return; // Exit if JSON parsing fails
+            }
+
+            // Ensure user is authenticated
+            if (user && user.primaryEmailAddress) {
+                const resp = await db.insert(MockInterview)
+                    .values({
+                        mockId: uuidv4(),
+                        jsonMockResp: mockJsonResp,
+                        jobPosition: jobPosition,
+                        jobDesc: jobDesc,
+                        jobExperience: jobExperience,
+                        createdBy: user.primaryEmailAddress.emailAddress, // User email
+                        createdAt: createdAtDate
+                    })
+                    .returning({ mockId: MockInterview.mockId });
+
+                console.log("Inserted ID:", resp);
+            } else {
+                console.error("User is not authenticated. Cannot set createdBy.");
+            }
+        } catch (error) {
+            console.error("Error during submission:", error);
+        } finally {
+            setLoading(false); // End loading state
+        }
+    }
 
     return (
         <div>
@@ -69,12 +111,13 @@ function AddNewInterview() {
                                 </div>
                                 <div className='flex gap-5 justify-end'>
                                     <Button type="button" variant="ghost" onClick={() => setOpenDialog(false)}>Cancel</Button>
-                                    <Button type="submit" disable={loading}>
-                                      {loading ?
-                                      <>
-                                      <LoaderCircle className='animate-spin'/>'Generating from AI'
-                                      </>:'Start Interview ' }
-                                      Start Interview</Button>
+                                    <Button type="submit" disabled={loading}>
+                                        {loading ? (
+                                            <>
+                                                <LoaderCircle className='animate-spin' /> Generating from AI
+                                            </>
+                                        ) : 'Start Interview'}
+                                    </Button>
                                 </div>
                             </form>
                         </DialogDescription>
@@ -82,7 +125,7 @@ function AddNewInterview() {
                 </DialogContent>
             </Dialog>
         </div>
-    )
+    );
 }
 
 export default AddNewInterview;
