@@ -17,6 +17,7 @@ import { useUser } from '@clerk/clerk-react';
 import moment from 'moment';
 import { db } from '../../../utils/db';
 import { MockInterview } from '../../../utils/schema';
+import { useRouter } from 'next/router';
 
 function AddNewInterview() {
     const [openDialog, setOpenDialog] = useState(false);
@@ -25,7 +26,7 @@ function AddNewInterview() {
     const [jobExperience, setJobExperience] = useState('');
     const [loading, setLoading] = useState(false);
     const createdAtDate = moment().toDate();
-
+    const router = useRouter();
     const { user } = useUser(); // Access the user information
 
     // Function to sanitize the JSON response
@@ -75,6 +76,10 @@ function AddNewInterview() {
                     .returning({ mockId: MockInterview.mockId });
 
                 console.log("Inserted ID:", resp);
+                if(resp){
+                    setOpenDialog(false); // Close the dialog
+                    router.push('/dashboard/interview/'+resp[0]?.mockId); // Redirect to the new interview page
+                }
             } else {
                 console.error("User is not authenticated. Cannot set createdBy.");
             }
