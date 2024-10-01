@@ -6,6 +6,7 @@ import { eq } from 'drizzle-orm';
 import Webcam from 'react-webcam';
 import { Lightbulb, WebcamIcon } from 'lucide-react';
 import { Button } from '/components/ui/button';
+import Link from 'next/link';
 
 function Interview({params}) {
     const [interviewData, setInterviewData] = useState();
@@ -65,8 +66,14 @@ function Interview({params}) {
         </div>
         </div>
         <div className='flex justify-end mt-10'>
-                <Button className='font-bold text-lg'>Start Interview</Button>
-            </div>
+            <Link href={'/dashboard/interview/'+params.interviewId+'/start'} passHref>
+                
+                    <Button className='font-bold text-lg'>
+                        Start Interview
+                    </Button>
+                
+            </Link>
+        </div>
     </div>
   )
 }

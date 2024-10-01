@@ -17,7 +17,7 @@ import { useUser } from '@clerk/clerk-react';
 import moment from 'moment';
 import { db } from '../../../utils/db';
 import { MockInterview } from '../../../utils/schema';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 
 function AddNewInterview() {
     const [openDialog, setOpenDialog] = useState(false);
