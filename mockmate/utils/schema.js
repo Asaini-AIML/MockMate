@@ -10,3 +10,15 @@ export const MockInterview = pgTable('mockInterview', {
     createdAt: timestamp('createdAt').defaultNow(), // Set default value for createdAt
     mockId: varchar('mockId').notNull(),
 });
+export const UserAnswer=pgTable('userAnswer',{
+    id: serial('id').primaryKey(),
+    mockIdRef: varchar('mockId').notNull(),
+    Question:varchar('Question').notNull(),
+    correctAns:varchar('correctAns'),
+    UserAns:text('UserAns'),
+    feedback:text('feedback'),
+    rating:varchar('rating'),
+    userEmail:varchar('userEmail'),
+    createdAt:varchar('createdAt'),
+
+})
