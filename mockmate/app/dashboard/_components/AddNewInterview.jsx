@@ -92,8 +92,12 @@ function AddNewInterview() {
 
     return (
         <div>
-            <div className='p-10 border rounded-lg bg-secondary hover:scale-105 hover:shadow-sm cursor-pointer transition-all' onClick={() => setOpenDialog(true)}>
-                <h2 className='text-lg text-center'>+ Add New Interview</h2>
+            <div className='p-10 border rounded-lg bg-secondary hover:scale-105 hover:shadow-sm cursor-pointer transition-all' onClick={() => setOpenDialog(true)}
+                style={{
+                    background: "linear-gradient(90deg, rgba(0, 74, 173, 0.5), rgba(54, 143, 216, 0.5))", // Gradient without pink
+                  }}
+                  >
+                <h2 className='text-lg text-center font-bold'>+ Add New Interview</h2>
             </div>
             <Dialog open={openDialog} onOpenChange={setOpenDialog}>
                 <DialogContent className='max-w-2xl'>
