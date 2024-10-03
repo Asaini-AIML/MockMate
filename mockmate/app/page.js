@@ -4,7 +4,6 @@ import { useRouter } from "next/navigation";
 import { Button } from "../components/ui/button";
 import './globals.css'
 
-
 const Home = () => {
   const router = useRouter();
 
@@ -18,21 +17,21 @@ const Home = () => {
       style={{ backgroundImage: "url('/bg-image.jpg')" }} // Adding background image
     >
       {/* Main Heading */}
-      <h1 className="font-extrabold text-5xl text-white bg-opacity-75 rounded-lg border-blue-800 font-mono mt-10 w-[80%] text-center py-6 shadow-xl"
+      <h1 className="font-extrabold text-4xl md:text-5xl text-white bg-opacity-75 rounded-lg border-blue-800 font-mono mt-10 w-[90%] md:w-[80%] text-center py-6 shadow-xl"
      style={{ background: 'linear-gradient(90deg, #111747, #368fd8)' }}
 >
         AI-Powered Mock Interview Practice
       </h1>
 
       {/* Card Section */}
-      <div className="mt-20 py-10 flex justify-between w-10/12 gap-8">
+      <div className="mt-10 md:mt-20 py-6 md:py-10 flex flex-col md:flex-row justify-between w-10/12 gap-6 md:gap-8">
         {/* Start Mock Interview Card */}
-        <div className="flex flex-col items-center bg-white h-auto w-[48%] rounded-lg border hover:shadow-2xl p-6"
+        <div className="flex flex-col items-center bg-white h-auto w-full md:w-[48%] rounded-lg border hover:shadow-2xl p-6"
          style={{
           background: "linear-gradient(90deg, #004aad, #cb6ce6)",
            // Gradient Background for Heading
         }}>
-          <h2 className="text-2xl font-bold mb-4">Start Your Interview</h2>
+          <h2 className="text-xl md:text-2xl font-bold mb-4">Start Your Interview</h2>
           <p className="text-gray-700 text-center px-4">
             Prepare to tackle personalized, interview-style scenarios designed
             just for you! Hone your skills with real-time, AI-powered feedback,
@@ -40,24 +39,21 @@ const Home = () => {
             confidence and readiness.
           </p>
           <Button
-            className="mt-16 bg-gradient-to-r from-[#004aad] to-[#cb6ce6] text-white px-4 py-2 rounded-lg transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-[#cb6ce6] active:scale-95" 
+            className="mt-10 md:mt-16 bg-gradient-to-r from-[#004aad] to-[#cb6ce6] text-white px-4 py-2 rounded-lg transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-[#cb6ce6] active:scale-95" 
             onClick={moveToDashboard}
-           
           >
             Proceed to Dashboard
           </Button>
         </div>
 
         {/* Project Description Card */}
-        <div className="flex flex-col items-center bg-white h-auto w-[48%] rounded-lg border hover:shadow-2xl p-6"
+        <div className="flex flex-col items-center bg-white h-auto w-full md:w-[48%] rounded-lg border hover:shadow-2xl p-6"
          style={{
           background: "linear-gradient(90deg, #cb6ce6, #004aad)",
-
            // Gradient Background for Heading
-        }}
-        >
-          <h2 className="text-2xl font-bold mb-4">About the Project</h2>
-          <p className="text-gray-700 text-center px-4 ">
+        }}>
+          <h2 className="text-xl md:text-2xl font-bold mb-4">About the Project</h2>
+          <p className="text-gray-700 text-center px-4">
             This AI-powered interview practice app uses <strong>Next.js</strong>{" "}
             for the front-end and <strong>PostgreSQL with Drizzle ORM</strong>{" "}
             for scalable back-end data management. It integrates{" "}
