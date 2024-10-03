@@ -28,8 +28,12 @@ function Feedback({params}) {
   }
   return (
     <div className='p-10'>
-      <h2 className='text-3xl font-bold text-green-500'>Congratulation!</h2>
-      <h2 className='font-bold text-2xl'>Here Is Your Interview Feedback</h2>
+     
+      {feedbackList?.length===0?<h2 className='font-bold text-xl text-gray-500'>No Interview Record Found</h2>
+      :
+      <>
+       <h2 className='text-3xl font-bold text-green-500'>Congratulation!</h2>
+       <h2 className='font-bold text-2xl'>Here Is Your Interview Feedback</h2>
       <h2 className='text-primary text-lg my-3'>Your Overall Interview Rating <strong>7/10</strong></h2>
       <h2 className='text-sm text-gray-500'>Find Below Interview Question with Correct Answer ,Your Answer And Feedback For Improvement</h2>
      {feedbackList&&feedbackList.map((item,index)=>(
@@ -46,7 +50,8 @@ function Feedback({params}) {
     </Collapsible>
     
      ))}
-   
+     </>
+}
      <Button onClick={()=>router.replace('/dashboard')}>GO HOME</Button>
      
     </div>
